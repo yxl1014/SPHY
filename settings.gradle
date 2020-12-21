@@ -1,0 +1,3 @@
+rootProject.name = 'SPHY'
+include 'spring-boot-user'
+

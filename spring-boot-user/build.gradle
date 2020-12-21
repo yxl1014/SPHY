@@ -1,0 +1,31 @@
+
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+
+    //web
+    compile("org.springframework.boot:spring-boot-starter-web:${spring_boot_version}")
+
+    //jdbc
+    compile("org.springframework.boot:spring-boot-starter-jdbc:${spring_boot_version}")
+    compile("mysql:mysql-connector-java:${mysql_connection_version}")
+
+    //redis
+    compile("org.springframework.boot:spring-boot-starter-data-redis:${spring_boot_version}")
+    compile("org.apache.commons:commons-pool2:${connection_pool_version}")
+    compile("com.fasterxml.jackson.core:jackson-databind:${jackson_version}")
+    compile("com.fasterxml.jackson.core:jackson-core:${jackson_version}")
+    compile("com.fasterxml.jackson.core:jackson-annotations:${jackson_version}")
+
+    //token
+    compile("com.auth0:java-jwt:2.2.0")
+
+    //aop
+    compile("org.aspectj:aspectjweaver:1.9.2")
+
+    //mongodb
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb:${spring_boot_version}")
+
+    //mail
+    compile("org.springframework.boot:spring-boot-starter-mail:${spring_boot_version}")
+}
