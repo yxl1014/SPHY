@@ -2,6 +2,7 @@ package com.easyarch.entity;
 
 
 import java.io.Serializable;
+import java.sql.Date;
 
 public class User implements Serializable {
 
@@ -15,6 +16,13 @@ public class User implements Serializable {
     private String birthday;
     private String home;
     private String company;
+    public User(){}
+
+    public User(String name,String username,String password){
+        this.name=name;
+        this.username=username;
+        this.password=password;
+    }
 
     public int getId() {
         return id;

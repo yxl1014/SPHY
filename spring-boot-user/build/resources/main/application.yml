@@ -2,7 +2,7 @@ spring:
   profiles:
     active: 8080
   datasource:
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://localhost:3306/first
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,21 +26,21 @@ spring:
         max-idle: 8
         # 连接池中的最小空闲连接
         min-idle: 0
-  application:
-    name: spirng-boot-mongodb
-  data:
-    mongodb:
-      host: localhost   #同127.0.0.1
-      port: 27017
-      database: test-log    #指定操作的数据库
-  mail:
-    host: smtp.qq.com
-    username:
-    password:
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+#  application:
+#    name: spirng-boot-mongodb
+#  data:
+      #    mongodb:
+      #host: localhost   #同127.0.0.1
+      ##port: 27017
+      #database: test-log    #指定操作的数据库
+    #mail:
+    #host: smtp.qq.com
+    #username:
+    #password:
+      #properties:
+        #mail:
+          #smtp:
+          #auth: true
+          #starttls:
+          #  enable: true
+        #  required: true

@@ -12,7 +12,7 @@ public class Userdao {
     private JdbcTemplate jdbcTemplate;
 
     public boolean addUser(User user){
-        String sql="insert into first(name,username,password,tel,birthday,home,company) values(?,?,?,?,?,?,?)";
+        String sql="insert into USER (name,username,password,tel,birthday,home,company) values(?,?,?,?,?,?,?)";
         int i=jdbcTemplate.update(sql,new Object[]{user.getName(),user.getUsername(),user.getPassword(),user.getTel(),
         user.getBirthday(),user.getHome(),user.getCompany()});
         if(i!=0){
@@ -22,9 +22,9 @@ public class Userdao {
         }
     }
 
-    public boolean deleteUser(User user){
-        String sql="delete from first where username=? and password=?";
-        int i=jdbcTemplate.update(sql,new Object[]{user.getUsername(),user.getPassword()});
+    public boolean deleteByUsernameAndPassword(String username,String password){
+        String sql="delete from USER where username=? and password=?";
+        int i=jdbcTemplate.update(sql,new Object[]{username,password});
         if(i!=0){
             return true;
         }else{
@@ -32,13 +32,37 @@ public class Userdao {
         }
     }
 
-    public boolean updatepassword(User o,User n){
-        String sql="update first set password= ? where username=? and password =?";
-        int i=jdbcTemplate.update(sql,new Object[]{n.getPassword(),o.getUsername(),o.getPassword()});
+    public boolean updatepassword(String username,String password,String newpwd){
+        String sql="update USER set password= ? where username=? and password =?";
+        int i=jdbcTemplate.update(sql,new Object[]{newpwd,username,password});
         if(i!=0){
             return true;
         }else{
             return false;
         }
+    }
+
+    public User findbyUsernameAndPassword(String username,String password){
+        String sql="select id,name,username,password,tel,birthday,home,company from USER where username=? and password=?";
+        User user=jdbcTemplate.queryForObject(sql,User.class,username,password);
+        if(user==null)
+            return null;
+        else
+            return user;
+    }
+
+    public Integer findbyUsername(String username){
+        String sql="select count(1) from USER where username=?";
+        return jdbcTemplate.queryForObject(sql,Integer.class,username);
+    }
+
+    public Integer getAllUser(){
+        String sql="select count(1) from USER";
+        return jdbcTemplate.queryForObject(sql,Integer.class);
+    }
+
+    public void deleteAllUser(){
+        String sql="delete from USER";
+        jdbcTemplate.update(sql);
     }
 }
