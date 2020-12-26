@@ -9,7 +9,6 @@ public class Log implements Serializable {
 
     private static final long serialVersionUID = -3246199064036684772L;
 
-    @Id
     private int id;
 
     private String logOp;

@@ -12,6 +12,6 @@ public class LogServie implements ILogService{
 
     @Override
     public void addLog(Log log) {
-
+        logdao.addLog(log);
     }
 }

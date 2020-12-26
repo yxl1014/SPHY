@@ -2,8 +2,11 @@ package com.easyarch.dao;
 
 import com.easyarch.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class Userdao {
@@ -44,11 +47,11 @@ public class Userdao {
 
     public User findbyUsernameAndPassword(String username,String password){
         String sql="select id,name,username,password,tel,birthday,home,company from USER where username=? and password=?";
-        User user=jdbcTemplate.queryForObject(sql,User.class,username,password);
-        if(user==null)
+        List<User> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class),username,password);
+        if(list.size()==0)
             return null;
         else
-            return user;
+            return list.get(0);
     }
 
     public Integer findbyUsername(String username){
