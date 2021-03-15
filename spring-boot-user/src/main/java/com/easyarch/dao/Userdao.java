@@ -45,6 +45,15 @@ public class Userdao {
         }
     }
 
+    public User findbyId(String id){
+        String sql="select id,name,username,password,tel,birthday,home,company from user where id=?";
+        List<User> list=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(User.class),id);
+        if(list.size()==0)
+            return null;
+        else
+            return list.get(0);
+    }
+
     public User findbyUsernameAndPassword(String username,String password){
         String sql="select id,name,username,password,tel,birthday,home,company from USER where username=? and password=?";
         List<User> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class),username,password);

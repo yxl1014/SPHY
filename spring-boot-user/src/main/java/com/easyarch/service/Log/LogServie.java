@@ -1,4 +1,4 @@
-package com.easyarch.service;
+package com.easyarch.service.Log;
 
 import com.easyarch.dao.Logdao;
 import com.easyarch.entity.Log;

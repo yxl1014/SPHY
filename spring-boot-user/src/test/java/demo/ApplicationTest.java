@@ -4,8 +4,8 @@ package demo;
 import com.easyarch.Application;
 import com.easyarch.entity.Log;
 import com.easyarch.entity.User;
-import com.easyarch.service.LogServie;
-import com.easyarch.service.UserService;
+import com.easyarch.service.Log.LogServie;
+import com.easyarch.service.Users.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.SimpleTimeZone;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)

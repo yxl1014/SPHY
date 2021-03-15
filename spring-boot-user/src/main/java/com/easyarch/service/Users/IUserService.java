@@ -1,4 +1,4 @@
-package com.easyarch.service;
+package com.easyarch.service.Users;
 
 import com.easyarch.entity.User;
 

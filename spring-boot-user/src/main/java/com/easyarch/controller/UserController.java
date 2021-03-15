@@ -2,7 +2,7 @@ package com.easyarch.controller;
 
 import com.easyarch.annotation.LogRecord;
 import com.easyarch.entity.User;
-import com.easyarch.service.UserService;
+import com.easyarch.service.Users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
