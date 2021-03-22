@@ -12,7 +12,7 @@ public class Logdao {
     private JdbcTemplate jdbcTemplate;
 
     public void addLog(Log log){
-        String sql="insert into LOG(logop,logtype,userid,createtime,url) values(?,?,?,?,?)";
+        String sql="insert into logs(log_op,log_type,log_userid,log_createtime,log_url) values(?,?,?,?,?)";
         jdbcTemplate.update(sql,log.getLogOp(),log.getLogType(),log.getUserId(),log.getCreateTime(),log.getUrl());
     }
 }

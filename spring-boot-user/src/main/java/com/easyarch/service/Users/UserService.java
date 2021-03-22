@@ -27,13 +27,13 @@ public class UserService implements IUserService{
 
     //TODO:这个地方可以改成String之后返回token，用来验证登录
     @Override
-    public boolean login(String username,String password){
+    public User login(String username,String password){
         String pwd=DigestUtils.md5DigestAsHex(password.getBytes());
         User user=userdao.findbyUsernameAndPassword(username,pwd);
         if(user!=null)
-            return true;
+            return user;
         else
-            return false;
+            return null;
     }
 
     @Override
@@ -59,14 +59,7 @@ public class UserService implements IUserService{
             return false;
         if(n.getName()==null)
             n.setName(old.getName());
-        if(n.getTel()==null)
-            n.setTel(old.getTel());
-        if(n.getBirthday()==null)
-            n.setBirthday(old.getBirthday());
-        if(n.getHome()==null)
-            n.setHome(old.getHome());
-        if(n.getCompany()==null)
-            n.setCompany(old.getCompany());
+        // TODO
         n.setUsername(username);
         n.setPassword(pwd);
         userdao.deleteByUsernameAndPassword(username,pwd);

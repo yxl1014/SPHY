@@ -6,7 +6,7 @@ public interface IUserService {
 
     int addUser(User user);
 
-    boolean login(String username,String password);
+    User login(String username,String password);
 
     Integer getAllUser();
 

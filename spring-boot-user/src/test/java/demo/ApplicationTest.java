@@ -47,9 +47,7 @@ public class ApplicationTest {
         userService.addUser(new User("yxl","zxcv","123456"));
         userService.addUser(new User("yxl","qwer","123456"));
         User user=new User("wy","wy0705","16638375481");
-        user.setTel("16638375481");
         DateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-        user.setBirthday(df.format(new Date()));
         userService.addUser(user);
         Assert.assertEquals(4,userService.getAllUser().intValue());
         //修改密码
@@ -71,7 +69,7 @@ public class ApplicationTest {
         Log log=new Log();
         log.setLogOp("aaa");
         log.setLogType("bbb");
-        log.setUserId(1);
+        log.setUserId("1");
         log.setCreateTime(System.currentTimeMillis());
         log.setUrl("localhost");
         logServie.addLog(log);

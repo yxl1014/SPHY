@@ -8,14 +8,12 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 3886376643037180111L;
 
-    private int id;
+    private String user_id;
     private String name;
     private String username;
     private String password;
-    private String tel;
-    private String birthday;
-    private String home;
-    private String company;
+    private String user_tel;
+    private String user_email;
     public User(){}
 
     public User(String name,String username,String password){
@@ -24,12 +22,12 @@ public class User implements Serializable {
         this.password=password;
     }
 
-    public int getId() {
-        return id;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getName() {
@@ -56,35 +54,19 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getTel() {
-        return tel;
+    public String getUser_tel() {
+        return user_tel;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
+    public void setUser_tel(String user_tel) {
+        this.user_tel = user_tel;
     }
 
-    public String getBirthday() {
-        return birthday;
+    public String getUser_email() {
+        return user_email;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getHome() {
-        return home;
-    }
-
-    public void setHome(String home) {
-        this.home = home;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
+    public void setUser_email(String user_email) {
+        this.user_email = user_email;
     }
 }

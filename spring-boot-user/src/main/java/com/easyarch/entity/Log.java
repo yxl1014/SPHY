@@ -1,7 +1,6 @@
 package com.easyarch.entity;
 
 
-import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
@@ -15,7 +14,7 @@ public class Log implements Serializable {
 
     private String logType;
 
-    private int userId;
+    private String userId;
 
     private long createTime;
 
@@ -45,11 +44,11 @@ public class Log implements Serializable {
         this.logType = logType;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

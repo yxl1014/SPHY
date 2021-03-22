@@ -15,9 +15,9 @@ public class Userdao {
     private JdbcTemplate jdbcTemplate;
 
     public boolean addUser(User user){
-        String sql="insert into USER (name,username,password,tel,birthday,home,company) values(?,?,?,?,?,?,?)";
-        int i=jdbcTemplate.update(sql,new Object[]{user.getName(),user.getUsername(),user.getPassword(),user.getTel(),
-        user.getBirthday(),user.getHome(),user.getCompany()});
+        String sql="insert into users (name,username,password,user_tel,user_email) values(?,?,?,?,?)";
+        int i=jdbcTemplate.update(sql,new Object[]{user.getName(),user.getUsername(),user.getPassword()
+                ,user.getUser_tel(),user.getUser_email()});
         if(i!=0){
             return true;
         }else{
@@ -26,7 +26,7 @@ public class Userdao {
     }
 
     public boolean deleteByUsernameAndPassword(String username,String password){
-        String sql="delete from USER where username=? and password=?";
+        String sql="delete from users where username=? and password=?";
         int i=jdbcTemplate.update(sql,new Object[]{username,password});
         if(i!=0){
             return true;
@@ -36,7 +36,7 @@ public class Userdao {
     }
 
     public boolean updatepassword(String username,String password,String newpwd){
-        String sql="update USER set password= ? where username=? and password =?";
+        String sql="update users set password= ? where username=? and password =?";
         int i=jdbcTemplate.update(sql,new Object[]{newpwd,username,password});
         if(i!=0){
             return true;
@@ -46,8 +46,8 @@ public class Userdao {
     }
 
     public User findbyId(String id){
-        String sql="select id,name,username,password,tel,birthday,home,company from user where id=?";
-        List<User> list=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(User.class),id);
+        String sql="select user_id,name,username,password,user_tel,user_email from users where user_id=?";
+        List<User> list=jdbcTemplate.queryForList(sql,User.class,id);
         if(list.size()==0)
             return null;
         else
@@ -55,8 +55,8 @@ public class Userdao {
     }
 
     public User findbyUsernameAndPassword(String username,String password){
-        String sql="select id,name,username,password,tel,birthday,home,company from USER where username=? and password=?";
-        List<User> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class),username,password);
+        String sql="select id,name,username,password,tel,birthday,home,company from users where username=? and password=?";
+        List<User> list = jdbcTemplate.queryForList(sql,User.class,username,password);
         if(list.size()==0)
             return null;
         else
@@ -64,17 +64,17 @@ public class Userdao {
     }
 
     public Integer findbyUsername(String username){
-        String sql="select count(1) from USER where username=?";
+        String sql="select count(1) from users where username=?";
         return jdbcTemplate.queryForObject(sql,Integer.class,username);
     }
 
     public Integer getAllUser(){
-        String sql="select count(1) from USER";
+        String sql="select count(1) from users";
         return jdbcTemplate.queryForObject(sql,Integer.class);
     }
 
     public void deleteAllUser(){
-        String sql="delete from USER";
+        String sql="delete from users";
         jdbcTemplate.update(sql);
     }
 }
