@@ -23,8 +23,8 @@ dependencies {
     //aop
     compile("org.aspectj:aspectjweaver:1.9.2")
 
-    //mongodb
-    compile("org.springframework.boot:spring-boot-starter-data-mongodb:${spring_boot_version}")
+/*    //mongodb
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb:${spring_boot_version}")*/
 
     //mail
     compile("org.springframework.boot:spring-boot-starter-mail:${spring_boot_version}")

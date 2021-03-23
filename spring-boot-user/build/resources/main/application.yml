@@ -2,7 +2,7 @@ spring:
   profiles:
     active: 8080
   datasource:
-    url: jdbc:mysql://localhost:3306/first
+    url: jdbc:mysql://localhost:3306/sphy
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

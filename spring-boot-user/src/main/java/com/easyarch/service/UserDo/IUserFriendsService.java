@@ -14,7 +14,9 @@ public interface IUserFriendsService {
      * 3：没有该好友
      * */
 
-    int addFriend(String userid, String addid, String name,String other);
+    int addFriendbyUserid(String userid, String addid, String name,String other);
+
+    int addFriendbyUsername(String username, String addid, String name,String other);
 
     int deleteFriend(String userid, String addid);
 

@@ -4,6 +4,7 @@ import com.easyarch.annotation.LogRecord;
 import com.easyarch.annotation.PassToken;
 import com.easyarch.entity.Resp;
 import com.easyarch.entity.User;
+import com.easyarch.service.UserDo.UserFriendsService;
 import com.easyarch.service.Users.UserService;
 import com.easyarch.support.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value = "/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserFriendsService friendsService;
 
     @PostMapping(value = "adduser")
     @LogRecord(operation = "用户操作", type = "注册")
@@ -105,9 +110,14 @@ public class UserController {
     public Resp deleteUser(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
         if (username == null || password == null)
             return new Resp("400", "fail", "用户名或密码为空", null, null);
+        User user = userService.findByUsernameAndPassword(username, password);
+        if (user == null) {
+            return new Resp("400", "fail", "未找到该用户", null, null);
+        }
+        friendsService.deleteUsers(user.getUser_id());
         if (userService.deleteUser(username, password))
             return new Resp("200", "success", "删除成功", null, null);
         else
-            return new Resp("400", "fail", "删除失败", null, null);
+            return new Resp("500", "fail", "删除失败", null, null);
     }
 }

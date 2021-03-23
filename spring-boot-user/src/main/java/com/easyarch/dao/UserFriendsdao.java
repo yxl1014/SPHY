@@ -17,8 +17,8 @@ public class UserFriendsdao {
     public boolean addUsers(String userid, String addid, String name, String other) {
         String sql = "insert into users_" + addid + " (userid,name,other) values(?,?,?);";
         try {
-            int j = jdbcTemplate.update(sql, new Object[]{userid,name,other});
-            if(j!=0)
+            int j = jdbcTemplate.update(sql, new Object[]{userid, name, other});
+            if (j != 0)
                 return true;
             else
                 return false;
@@ -73,7 +73,7 @@ public class UserFriendsdao {
         String sql = "delete from users_" + addid + " where userid=?;";
         try {
             int j = jdbcTemplate.update(sql, userid);
-            if(j!=0)
+            if (j != 0)
                 return true;
             else
                 return false;
@@ -84,10 +84,10 @@ public class UserFriendsdao {
     }
 
     public boolean updateName(String addid, String userid, String data) {
-        String sql ="UPDATE users_" + addid + " SET name=? WHERE userid=?";
+        String sql = "UPDATE users_" + addid + " SET name=? WHERE userid=?";
         try {
-            int j = jdbcTemplate.update(sql, new Object[]{data,userid});
-            if(j!=0)
+            int j = jdbcTemplate.update(sql, new Object[]{data, userid});
+            if (j != 0)
                 return true;
             else
                 return false;
@@ -98,10 +98,10 @@ public class UserFriendsdao {
     }
 
     public boolean updateOther(String addid, String userid, String data) {
-        String sql ="UPDATE users_" + addid + " SET other =? WHERE userid=?";
+        String sql = "UPDATE users_" + addid + " SET other =? WHERE userid=?";
         try {
-            int j = jdbcTemplate.update(sql, new Object[]{data,userid});
-            if(j!=0)
+            int j = jdbcTemplate.update(sql, new Object[]{data, userid});
+            if (j != 0)
                 return true;
             else
                 return false;
@@ -112,7 +112,17 @@ public class UserFriendsdao {
     }
 
     public List<UserFriend> getALlFriend(String addid) {
-        String sql="select * from USER";
-        return jdbcTemplate.queryForList(sql,UserFriend.class);
+        String sql = "select * from USER";
+        return jdbcTemplate.queryForList(sql, UserFriend.class);
+    }
+
+    public boolean findFriend(String userid, String addid) {
+        String sql = "select count(1) from users_" + addid + " where userid=?;";
+        try {
+            Integer i = jdbcTemplate.queryForObject(sql, Integer.class, userid);
+            return i != 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

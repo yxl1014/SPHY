@@ -5,9 +5,12 @@ import com.easyarch.dao.UserFriendsdao;
 import com.easyarch.entity.User;
 import com.easyarch.entity.UserFriend;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@Service
 public class UserFriendsService implements IUserFriendsService {
     /*
      * errerx信息
@@ -20,6 +23,7 @@ public class UserFriendsService implements IUserFriendsService {
      * 5：表删除失败
      * 6：执行失败
      * 7：选择有误
+     * 8：已有该好友
      * */
 
     @Autowired
@@ -29,7 +33,7 @@ public class UserFriendsService implements IUserFriendsService {
     private UserFriendsdao userFriendsdao;
 
     @Override
-    public int addFriend(String userid, String addid, String name, String other) {
+    public int addFriendbyUserid(String userid, String addid, String name, String other) {
         if (userid == null || userid.equals("")
                 || addid == null || addid.equals("")
                 || name == null || name.equals(""))//空指针判断
@@ -39,6 +43,10 @@ public class UserFriendsService implements IUserFriendsService {
         if (user == null)//查看该用户是否存在
             return 1;
 
+        if(userFriendsdao.findFriend(userid, addid)){//是否已经有该好友
+            return 8;
+        }
+
         if (!userFriendsdao.findtable(addid)) {//查询这个用户的好友库是不是存在
             if (!userFriendsdao.createUsersTable(addid))//若不存在则创建一个数据库
                 return 4;
@@ -46,6 +54,32 @@ public class UserFriendsService implements IUserFriendsService {
 
         if (!userFriendsdao.addUsers(userid, addid, name, other))//添加好友
             return 6;
+        return 0;
+    }
+
+    @Override
+    public int addFriendbyUsername(String username, String addid, String name, String other) {
+        if (username == null || username.equals("")
+                || addid == null || addid.equals("")
+                || name == null || name.equals(""))//空指针判断
+            return 2;
+        User user = userdao.findbyUsername(username);//查询这个用户
+
+        if (user == null)//查看该用户是否存在
+            return 1;
+
+        if(userFriendsdao.findFriend(user.getUser_id(), addid)){//是否已经有该好友
+            return 8;
+        }
+
+        if (!userFriendsdao.findtable(addid)) {//查询这个用户的好友库是不是存在
+            if (!userFriendsdao.createUsersTable(addid))//若不存在则创建一个数据库
+                return 4;
+        }
+
+        if (!userFriendsdao.addUsers(username, addid, name, other))//添加好友
+            return 6;
+
         return 0;
     }
 
