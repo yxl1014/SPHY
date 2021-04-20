@@ -28,4 +28,10 @@ dependencies {
 
     //mail
     compile("org.springframework.boot:spring-boot-starter-mail:${spring_boot_version}")
+
+    //netty
+    compile ("io.netty:netty-all:4.1.10.Final")
+
+    //gson
+    compile ("com.google.code.gson:gson:2.8.6")
 }
