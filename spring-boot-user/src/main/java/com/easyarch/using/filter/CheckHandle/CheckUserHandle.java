@@ -27,6 +27,8 @@ public class CheckUserHandle implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        /*User user1 = new User("1", "yxl", "qwer", "123456");
+        System.out.println(JWTUtil.sign(user1, 60 * 60 * 24 * 7));*/
         String token = request.getHeader("token");// 从 http 请求头中取出 token
 
         System.out.println(handler);
@@ -43,46 +45,35 @@ public class CheckUserHandle implements HandlerInterceptor {
 
 
         //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(LogRecord.class)) {
-            LogRecord logRecord = method.getAnnotation(LogRecord.class);
-            if (logRecord.required()) {
-
-                //访问日志
-                Log log = new Log();
-                log.setLogOp(logRecord.operation());
-                log.setLogType(logRecord.type());
-                log.setUserId(user != null ? user.getUser_id() : null);
-                log.setCreateTime(new Date().getTime());
-                log.setUrl(request.getRequestURI());
-                logServie.addLog(log);
-
-
-                //检查是否有passtoken注释，有则跳过认证
-                if (method.isAnnotationPresent(PassToken.class)) {//获取这个方法是否有这个注释
-                    PassToken passToken = method.getAnnotation(PassToken.class);
-                    if (passToken.required()) {
-                        return true;
-                    }
-                } else {
-                    // 执行认证
-                    if (token == null) {
-                        throw new RuntimeException("无token，请重新登录");
-                    }
-                    // 获取 token 中的 user
+        if (!method.isAnnotationPresent(LogRecord.class)) {
+            return false;
+        }
+        LogRecord logRecord = method.getAnnotation(LogRecord.class);
+        //访问日志
+        Log log = new Log();
+        log.setLogOp(logRecord.operation());
+        log.setLogType(logRecord.type());
+        log.setUserId(user != null ? user.getUser_id() : null);
+        log.setCreateTime(new Date().getTime());
+        log.setUrl(request.getRequestURI());
+        logServie.addLog(log);
 
 
-                    if (user == null) {
-                        throw new RuntimeException("用户不存在，请重新登录");
-                    }
-                }
-
-
-                return true;
+        //检查是否有passtoken注释，有则跳过认证
+        if (!method.isAnnotationPresent(PassToken.class)) {//获取这个方法是否有这个注释
+            // 执行认证
+            if (token == null) {
+                return false;
+                //throw new RuntimeException("无token，请重新登录");
+            }
+            // 获取 token 中的 user
+            if (user == null) {
+                return false;
+                //throw new RuntimeException("用户不存在，请重新登录");
             }
         }
+        return true;
 
-
-        return false;
     }
 
     @Override

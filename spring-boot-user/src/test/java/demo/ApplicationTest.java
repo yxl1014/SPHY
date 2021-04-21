@@ -31,26 +31,26 @@ public class ApplicationTest {
 
     @Before
     public void before(){
-        userService.deleteAllUser();
+       /* userService.deleteAllUser();*/
     }
 
     @Test
     public void testadduser(){
         //新建用户
-        userService.addUser(new User("yxl","qwer","123456"));
+        /*userService.addUser(new User("yxl","qwer","123456"));
         userService.addUser(new User("yxl","asdf","123456"));
         userService.addUser(new User("yxl","zxcv","123456"));
-        userService.addUser(new User("yxl","qwer","123456"));
+        userService.addUser(new User("yxl","qwer","123456"));*/
     }
 
     @Test
     public void testaddlog(){
-        Log log=new Log();
+        /*Log log=new Log();
         log.setLogOp("aaa");
         log.setLogType("bbb");
         log.setUserId("1");
         log.setCreateTime(System.currentTimeMillis());
         log.setUrl("localhost");
-        logServie.addLog(log);
+        logServie.addLog(log);*/
     }
 }

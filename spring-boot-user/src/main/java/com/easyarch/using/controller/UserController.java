@@ -50,16 +50,24 @@ public class UserController {
         }
     }
 
+    @PostMapping(value = "logins")
+    @LogRecord(operation = "用户操作", type = "登录")
+    @PassToken
+    public String logins(@RequestParam(name = "u") String username, @RequestParam(name = "p") String password) {
+        return "q";
+    }
+
     @PostMapping(value = "login")
     @LogRecord(operation = "用户操作", type = "登录")
     @PassToken
     public String login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
+
         if (username == null || password == null)
             return gson.toJson(new Resp("400", "fail", "用户名或密码为空", null, null));
         User user;
-        if ((user = userService.login(username, password)) != null)
-            return gson.toJson(new Resp("200", "success", "注册成功", user.getUser_id(), JWTUtil.sign(user, 60 * 60 * 24 * 7)));
-        else
+        if ((user = userService.login(username, password)) != null) {
+            return gson.toJson(new Resp("200", "success", "登录成功", user.getUser_id(), JWTUtil.sign(user, 60 * 60 * 24 * 7)));
+        } else
             return gson.toJson(new Resp("400", "fail", "未找到该用户", null, null));
     }
 

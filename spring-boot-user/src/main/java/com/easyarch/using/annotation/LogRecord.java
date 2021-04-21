@@ -12,7 +12,6 @@ public @interface LogRecord {
     /** 日志类型 */
     String type();
 
-    boolean required() default true;
 }
 
 
