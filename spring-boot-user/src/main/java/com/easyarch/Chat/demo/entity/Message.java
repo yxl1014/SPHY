@@ -4,7 +4,7 @@ public class Message {
 
     private String id;
     private String toUsername;
-    private String forUsername;
+    private String fromUsername;
     private String content;
     private String messageType;
     private long timestamp;
@@ -21,7 +21,7 @@ public class Message {
     public Message(String id, String toUsername, String forUsername, String content, String messageType, long timestamp) {
         this.id = id;
         this.toUsername = toUsername;
-        this.forUsername = forUsername;
+        this.fromUsername = forUsername;
         this.content = content;
         this.messageType = messageType;
         this.timestamp = timestamp;
@@ -67,11 +67,11 @@ public class Message {
         this.toUsername = toUsername;
     }
 
-    public String getForUsername() {
-        return forUsername;
+    public String getFromUsername() {
+        return fromUsername;
     }
 
-    public void setForUsername(String forUsername) {
-        this.forUsername = forUsername;
+    public void setFromUsername(String fromUsername) {
+        this.fromUsername = fromUsername;
     }
 }

@@ -14,6 +14,11 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executor;
@@ -40,11 +45,70 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) {
-        String username=channelToUsername.get(ctx.channel());
+        String username = channelToUsername.get(ctx.channel());
         usernameToChannel.remove(username);
         channelToUsername.remove(ctx.channel());
         channelGroup.remove(ctx.channel());
         online.set(channelGroup.size());
+    }
+
+    private void sendPicByChannel(Message message, Channel channel, boolean life) {
+        String path = "/test/sphy/pic/";
+        String picname = message.getTimestamp() + message.getFromUsername() + ".jpg";
+
+        poolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                int len;
+                OutputStream os;
+                try {
+                    os = new FileOutputStream(path + picname);
+                    len = message.getContent().getBytes().length;
+                    os.write(message.getContent().getBytes(), 0, len);
+                    os.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        if (life) {
+            sendMessageByChannel(channel, message);
+        } else {
+            //存缓存
+        }
+
+    }
+
+    private void sendVoiceByChannel(Message message, Channel channel, boolean life) {
+        String path = "/test/sphy/voi/";
+        String picname = message.getTimestamp() + message.getFromUsername() + ".wav";
+
+        poolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                int len;
+                OutputStream os;
+                try {
+                    os = new FileOutputStream(path + picname);
+                    len = message.getContent().getBytes().length;
+                    os.write(message.getContent().getBytes(), 0, len);
+                    os.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        if (life) {
+            sendMessageByChannel(channel, message);
+        } else {
+            //存缓存
+        }
+    }
+
+    private void sendVideoByChannel(Message message, Channel channel, boolean life) {
+
     }
 
     @Override
@@ -59,15 +123,39 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         //用户上线给其他用户发送上线提示
         if (MessageType.INIT.name().equals(message.getMessageType())) {
             usernameToChannel.put(message.getContent(), ctx.channel());
-            channelToUsername.put(ctx.channel(),message.getContent());
+            channelToUsername.put(ctx.channel(), message.getContent());
             sendMessageInUnlion(ctx.channel(), message.getContent());
             sendMessageForAll(new Message(ctx.channel().id().asShortText(), "用户上线：" + message.getContent(), System.currentTimeMillis(), MessageType.TEXT.name()));
             return;
         }
 
-        if (!MessageType.TEXT.name().equals(message.getMessageType())) {
+        if (MessageType.VIDEO.name().equals(message.getMessageType())) {
+            Channel channel = usernameToChannel.get(message.getToUsername());
+            if (channel != null)
+                sendVideoByChannel(message, channel, true);
+            else
+                sendVideoByChannel(message, null, false);
             return;
         }
+
+        if (MessageType.PICTURE.name().equals(message.getMessageType())) {
+            Channel channel = usernameToChannel.get(message.getToUsername());
+            if (channel != null)
+                sendPicByChannel(message, channel, true);
+            else
+                sendPicByChannel(message, null, false);
+            return;
+        }
+
+        if (MessageType.VOICE.name().equals(message.getMessageType())) {
+            Channel channel = usernameToChannel.get(message.getToUsername());
+            if (channel != null)
+                sendVoiceByChannel(message, channel, true);
+            else
+                sendVoiceByChannel(message, null, false);
+            return;
+        }
+
 
         String to = message.getToUsername();
         Channel c = usernameToChannel.get(to);
@@ -103,7 +191,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
 
         while (chats.size() != 0) {
             Message m = chats.getLast();
-            sendMessageByChannel(channel, new Message(channel.id().asShortText(), m.getToUsername(), m.getForUsername(), m.getContent(), m.getMessageType(), m.getTimestamp()));
+            sendMessageByChannel(channel, new Message(channel.id().asShortText(), m.getToUsername(), m.getFromUsername(), m.getContent(), m.getMessageType(), m.getTimestamp()));
         }
 
         usernamecache.remove(username);
