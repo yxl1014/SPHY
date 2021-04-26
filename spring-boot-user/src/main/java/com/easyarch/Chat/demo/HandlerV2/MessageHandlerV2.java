@@ -1,4 +1,4 @@
-package com.easyarch.Chat.demo.Socket;
+package com.easyarch.Chat.demo.HandlerV2;
 
 import com.easyarch.Chat.demo.entity.Message;
 import com.easyarch.Chat.demo.entity.MessageType;
@@ -14,21 +14,16 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
+public class MessageHandlerV2 extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    public static ConcurrentHashMap<String, ConcurrentLinkedDeque<Message>> usernamecache = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<String, Channel> usernameToChannel = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Channel, String> channelToUsername = new ConcurrentHashMap<>();
     public static Executor poolExecutor = Executors.newCachedThreadPool();
@@ -50,6 +45,72 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         channelToUsername.remove(ctx.channel());
         channelGroup.remove(ctx.channel());
         online.set(channelGroup.size());
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
+        Message message = new Gson().fromJson(msg.text(), Message.class);
+
+        if (message == null) {
+            sendMessageByChannel(ctx.channel(), new Message(ctx.channel().id().asShortText(), "消息错误", System.currentTimeMillis(), MessageType.TEXT.name()));
+            return;
+        }
+
+        //用户上线给其他用户发送上线提示
+        if (MessageType.INIT.name().equals(message.getMessageType())) {
+            usernameToChannel.put(message.getContent(), ctx.channel());
+            channelToUsername.put(ctx.channel(), message.getContent());
+            /*sendMessageInUnlion(ctx.channel(), message.getContent());*/
+
+            sendMessageForAll(new Message(ctx.channel().id().asShortText(), "用户上线：" + message.getContent(), System.currentTimeMillis(), MessageType.TEXT.name()));
+            return;
+        }
+
+        if (MessageType.VIDEO.name().equals(message.getMessageType())) {
+            Channel channel = usernameToChannel.get(message.getToUsername());
+            if (channel != null)
+                sendVideoByChannel(message, channel, true);
+            else
+                sendVideoByChannel(message, null, false);
+            return;
+        }
+
+        if (MessageType.PICTURE.name().equals(message.getMessageType())) {
+            Channel channel = usernameToChannel.get(message.getToUsername());
+            if (channel != null)
+                sendPicByChannel(message, channel, true);
+            else
+                sendPicByChannel(message, null, false);
+            return;
+        }
+
+        if (MessageType.VOICE.name().equals(message.getMessageType())) {
+            Channel channel = usernameToChannel.get(message.getToUsername());
+            if (channel != null)
+                sendVoiceByChannel(message, channel, true);
+            else
+                sendVoiceByChannel(message, null, false);
+            return;
+        }
+
+
+        String to = message.getToUsername();
+        Channel c = usernameToChannel.get(to);
+
+        if (c == null) {
+        } else
+            sendMessageByChannel(c, message);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        poolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                errorservice.insert(new Erormessage(String.valueOf(System.currentTimeMillis()), ctx.channel().remoteAddress().toString(), cause.toString()));
+            }
+        });
+        super.exceptionCaught(ctx, cause);
     }
 
     private void sendPicByChannel(Message message, Channel channel, boolean life) {
@@ -75,7 +136,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         if (life) {
             sendMessageByChannel(channel, message);
         } else {
-            //存缓存
+
         }
 
     }
@@ -132,92 +193,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         } else {
             //存缓存
         }
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
-        Message message = new Gson().fromJson(msg.text(), Message.class);
-
-        if (message == null) {
-            sendMessageByChannel(ctx.channel(), new Message(ctx.channel().id().asShortText(), "消息错误", System.currentTimeMillis(), MessageType.TEXT.name()));
-            return;
-        }
-
-        //用户上线给其他用户发送上线提示
-        if (MessageType.INIT.name().equals(message.getMessageType())) {
-            usernameToChannel.put(message.getContent(), ctx.channel());
-            channelToUsername.put(ctx.channel(), message.getContent());
-            sendMessageInUnlion(ctx.channel(), message.getContent());
-            sendMessageForAll(new Message(ctx.channel().id().asShortText(), "用户上线：" + message.getContent(), System.currentTimeMillis(), MessageType.TEXT.name()));
-            return;
-        }
-
-        if (MessageType.VIDEO.name().equals(message.getMessageType())) {
-            Channel channel = usernameToChannel.get(message.getToUsername());
-            if (channel != null)
-                sendVideoByChannel(message, channel, true);
-            else
-                sendVideoByChannel(message, null, false);
-            return;
-        }
-
-        if (MessageType.PICTURE.name().equals(message.getMessageType())) {
-            Channel channel = usernameToChannel.get(message.getToUsername());
-            if (channel != null)
-                sendPicByChannel(message, channel, true);
-            else
-                sendPicByChannel(message, null, false);
-            return;
-        }
-
-        if (MessageType.VOICE.name().equals(message.getMessageType())) {
-            Channel channel = usernameToChannel.get(message.getToUsername());
-            if (channel != null)
-                sendVoiceByChannel(message, channel, true);
-            else
-                sendVoiceByChannel(message, null, false);
-            return;
-        }
-
-
-        String to = message.getToUsername();
-        Channel c = usernameToChannel.get(to);
-
-        if (c == null) {
-            ConcurrentLinkedDeque<Message> messages = usernamecache.get(to);
-            if (messages == null) {
-                usernamecache.put(to, new ConcurrentLinkedDeque<>());
-                messages = usernamecache.get(to);
-            }
-            messages.addFirst(message);
-        } else
-            sendMessageByChannel(c, message);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        //异常日志
-        poolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                errorservice.insert(new Erormessage(String.valueOf(System.currentTimeMillis()), ctx.channel().remoteAddress().toString(), cause.toString()));
-            }
-        });
-        super.exceptionCaught(ctx, cause);
-    }
-
-    private void sendMessageInUnlion(Channel channel, String username) {
-        ConcurrentLinkedDeque<Message> chats = usernamecache.get(username);
-
-        if (chats == null)
-            return;
-
-        while (chats.size() != 0) {
-            Message m = chats.getLast();
-            sendMessageByChannel(channel, new Message(channel.id().asShortText(), m.getToUsername(), m.getFromUsername(), m.getContent(), m.getMessageType(), m.getTimestamp()));
-        }
-
-        usernamecache.remove(username);
     }
 
     private void sendMessageByChannel(Channel channel, Message message) {
