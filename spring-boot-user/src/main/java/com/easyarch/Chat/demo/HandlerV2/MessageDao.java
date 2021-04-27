@@ -12,11 +12,11 @@ public class MessageDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    public List<MessageV2> findNoreadingByToFromUsename(String fromusername, String tousername) {//查询数据库中没有发送的数据
+    public List<MessageV2> findNoreadingByToFromUsename(String tousername) {//查询数据库中没有发送的数据
         List<MessageV2> list;
         String sql = "select mid,uid,to_username,from_username,context,message_type,data_type,reading,can_send,m_timestamp" +
-                " from messages where reading=false and from_usernmae = ? and to_username = ? order by m_timestamp)";
-        list = jdbcTemplate.queryForList(sql, MessageV2.class, fromusername, tousername);
+                " from messages where reading=false and to_username = ? order by m_timestamp)";
+        list = jdbcTemplate.queryForList(sql, MessageV2.class, tousername);
         return list;
     }
 

@@ -1,5 +1,6 @@
 package com.easyarch.Chat.demo.Socket;
 
+import com.easyarch.Chat.demo.HandlerV2.MessageHandlerV2;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -15,6 +16,6 @@ public class ChatPipelineMessage extends ChannelInitializer<SocketChannel> {
         socketChannel.pipeline().addLast(new ChunkedWriteHandler());
         socketChannel.pipeline().addLast(new HttpObjectAggregator(1024 * 62));
         socketChannel.pipeline().addLast(new WebSocketServerProtocolHandler("/ws"));
-        socketChannel.pipeline().addLast(new MessageHandler());
+        socketChannel.pipeline().addLast(new MessageHandlerV2());
     }
 }

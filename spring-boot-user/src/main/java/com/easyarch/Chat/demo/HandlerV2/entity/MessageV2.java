@@ -13,7 +13,8 @@ public class MessageV2 {
     private long timestamp;
 
 
-    public MessageV2(String mid, String uid, String toUsername, String fromUsername, String content, String messageType, String dataType, boolean reading, boolean canSend, long timestamp) {
+    public MessageV2(String mid, String uid, String toUsername, String fromUsername, String content,
+                     String messageType, String dataType, boolean reading, boolean canSend, long timestamp) {
         this.mid = mid;
         this.uid = uid;
         this.toUsername = toUsername;
